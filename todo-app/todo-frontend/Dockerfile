@@ -1,17 +1,15 @@
-FROM node:18.19.0-slim
+FROM node:18.19.0-slim as build-stage
 
 ENV REACT_APP_BACKEND_URL=http://localhost:3000
 
 WORKDIR /usr/src/app
 
-COPY --chown=node:node . .
+COPY . .
 
 RUN npm ci
 
 RUN npm run build
 
-RUN npm install -g serve
+FROM nginx:alpine
 
-USER node
-
-CMD ["serve", "build"]
+COPY --from=build-stage /usr/src/app/build /usr/share/nginx/html
