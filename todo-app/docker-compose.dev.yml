@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  frontend:
+    image: todo-frontend-dev
+    container_name: todo-frontend-dev
+    build:
+      context: ./todo-frontend
+      dockerfile: dev.Dockerfile
+
+  nginx:
+    image: nginx
+    container_name: reverse-proxy
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    depends_on:
+      - frontend
